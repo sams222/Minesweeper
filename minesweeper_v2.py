@@ -16,7 +16,8 @@ offsets = [
     (1, 1)
 ]
 
-def make_bomb_board(length, width, difficulty, coordy, coordx):
+# Two different boards are used. The Guess Board has what players see in the terminal while the Bomb Board is the layer "underneath" that has the bombs that have not yet been revealed. 
+def make_bomb_board(length, width, difficulty, coordy, coordx): # Takes coords as input to generate bomb board without bombs at the players first move location. 
     board = [[0 for _ in range(width)] for _ in range(length)]
     safe_spots = []
     safe_spots.append([coordy, coordx])
@@ -30,25 +31,25 @@ def make_bomb_board(length, width, difficulty, coordy, coordx):
     while bombs_placed < difficulty:
         y = random.randint(0, length - 1)
         x = random.randint(0, width - 1)
-        if [y, x] not in safe_spots and board[y][x] != 'x':
+        if [y, x] not in safe_spots and board[y][x] != 'x': #generate bombs in a random location and only places them if they are not in the designated safe spots. 
             board[y][x] = 'x'
             bombs_placed += 1
 
     # Calculate adjacent bomb counts
-    for i in range(length):
+    for i in range(length): 
         for j in range(width):
             if board[i][j] == 'x':
                 for offsety, offsetx in offsets:
-                    ni, nj = i + offsety, j + offsetx
-                    if 0 <= ni < length and 0 <= nj < width and board[ni][nj] != 'x':
-                        board[ni][nj] += 1
+                    ni, nj = i + offsety, j + offsetx # uses the offset tuple list to look at every square around a bomb
+                    if 0 <= ni < length and 0 <= nj < width and board[ni][nj] != 'x': # if the offset squares are within bounds of the board, add one
+                        board[ni][nj] += 1 # this creates the numbered tiles where the number on the tile represents the number of adjacent bombs
             
     return board
 
-def make_guess_board(length, width):
-    return [['   ' for _ in range(width)] for _ in range(length)]
+def make_guess_board(length, width): # makes the guess board which is the one displayed for players to see. 
+    return [['   ' for _ in range(width)] for _ in range(length)] 
 
-def adjacent_zeroes(g_board, b_board, coordy, coordx):
+def adjacent_zeroes(g_board, b_board, coordy, coordx): # recursive function for revealing adjacent 'zero' squares. This makes it so players don't have to manually reveal every free tile which is extremely tedious. 
     if not (0 <= coordy < len(g_board) and 0 <= coordx < len(g_board[0])):
         return
     
@@ -186,4 +187,5 @@ def game():
     print("Game over!")
 
 if __name__ == "__main__":
+
     game()
